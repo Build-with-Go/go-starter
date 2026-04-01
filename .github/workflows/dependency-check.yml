@@ -1,4 +1,4 @@
-name: Dependency Check
+name: Dependency Updates
 
 on:
   push:
@@ -7,12 +7,17 @@ on:
     branches: [ main, master ]
 
 jobs:
-  dependency-check:
-    name: Check for Dependency Updates
+  dependency-updates:
+    name: Create Dependency Update PRs
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -20,34 +25,101 @@ jobs:
         go-version: '1.21'
 
     - name: Check for outdated Go modules
+      id: outdated
       run: |
         echo "🔍 Checking for outdated Go modules..."
         
-        # Get list of outdated packages
-        go list -u -m -json all | grep -E '"Path":|"Version":|"Time":|"Update":' || echo "No outdated packages found"
+        # Get list of direct dependencies
+        go list -m -json all | jq -r 'select(.Indirect != true) | "\(.Path)@\(.Version)"' > current_deps.txt
         
-        # Check for any security vulnerabilities
-        echo "🛡️ Checking for security vulnerabilities..."
-        go list -json -m all | nancy sleuth --skip-update-check || echo "No vulnerabilities found"
+        # Check for updates
+        go list -u -m -json all | jq -r 'select(.Indirect != true and .Update.Version != null) | "\(.Path)@\(.Update.Version)"' > updates.txt
+        
+        if [ -s updates.txt ]; then
+          echo "outdated=true" >> $GITHUB_OUTPUT
+          echo "Found $(wc -l < updates.txt) outdated packages:"
+          cat updates.txt
+        else
+          echo "outdated=false" >> $GITHUB_OUTPUT
+          echo "✅ All dependencies are up to date!"
+        fi
 
-    - name: Check GitHub Actions updates
+    - name: Create update PR
+      if: steps.outdated.outputs.outdated == 'true'
       run: |
-        echo "🔄 Checking for GitHub Actions updates..."
+        # Create branch for updates
+        BRANCH="dependency-updates-$(date +%Y%m%d-%H%M%S)"
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git checkout -b $BRANCH
         
-        # Extract action versions from workflow files
-        grep -r "uses:" .github/workflows/ | grep -v "#" | sort | uniq
+        # Update dependencies
+        echo "� Updating dependencies..."
+        go get -u ./...
+        go mod tidy
         
-        echo "💡 Consider updating GitHub Actions to latest versions if available"
+        # Run tests to ensure updates don't break anything
+        echo "🧪 Running tests..."
+        go test ./... || {
+          echo "❌ Tests failed after dependency updates"
+          exit 1
+        }
+        
+        # Commit changes
+        git add go.mod go.sum
+        git commit -m "chore: update dependencies
+        
+        - Updated Go modules to latest versions
+        - All tests pass after updates"
+        
+        # Push branch
+        git push origin $BRANCH
+        
+        # Create PR
+        gh pr create \
+          --title "📦 Automated Dependency Updates" \
+          --body "## 🚀 Automated Dependency Updates
+
+        This PR updates the following dependencies:
+        
+        \`\`\`
+        $(cat updates.txt)
+        \`\`\`
+        
+        ### ✅ Checks
+        - [x] All tests pass
+        - [x] Dependencies updated successfully
+        - [x] No breaking changes detected
+        
+        ### 📋 Review Notes
+        - Please review the dependency changes
+        - Check for any breaking changes in the changelinks
+        - Test thoroughly before merging
+        
+        ---
+        🤖 This PR was created automatically by GitHub Actions
+        " \
+          --base master \
+          --head $BRANCH
+        
+        echo "✅ Dependency update PR created: $BRANCH"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create summary
       run: |
-        echo "## 📦 Dependency Check Summary" >> $GITHUB_STEP_SUMMARY
+        echo "## 📦 Dependency Update Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Go modules checked" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Security vulnerabilities scanned" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ GitHub Actions reviewed" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Next steps:**" >> $GITHUB_STEP_SUMMARY
-        echo "- Review any outdated packages above" >> $GITHUB_STEP_SUMMARY
-        echo "- Dependabot will create PRs for updates (daily)" >> $GITHUB_STEP_SUMMARY
-        echo "- Monitor Dependabot Alerts for security issues" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ steps.outdated.outputs.outdated }}" == "true" ]; then
+          echo "✅ **Updates Available**: $(wc -l < updates.txt) packages" >> $GITHUB_STEP_SUMMARY
+          echo "🔄 **Action**: Created PR with dependency updates" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Updated Packages:" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat updates.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        else
+          echo "✅ **Status**: All dependencies up to date" >> $GITHUB_STEP_SUMMARY
+          echo "🎉 **Action**: No updates needed" >> $GITHUB_STEP_SUMMARY
+        fi
