@@ -1,7 +1,6 @@
 # Go Starter
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/Build-with-Go/go-starter)](https://goreportcard.com/report/github.com/Build-with-Go/go-starter)
-[![CI](https://github.com/Build-with-Go/go-starter/workflows/CI/badge.svg)](https://github.com/Build-with-Go/go-starter/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
 
