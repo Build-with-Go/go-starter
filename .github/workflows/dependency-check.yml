@@ -24,16 +24,10 @@ jobs:
       with:
         go-version: '1.21'
 
-    - name: Install required tools
+    - name: Install jq
       run: |
-        # Install jq for JSON parsing
+        # Install jq for JSON parsing (gh CLI is already available in GitHub Actions)
         sudo apt-get update && sudo apt-get install -y jq
-        
-        # Install GitHub CLI
-        sudo apt-get install -y gh || \
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-          sudo apt-get update && sudo apt-get install -y gh
 
     - name: Check for outdated Go modules
       id: outdated
