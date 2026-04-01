@@ -99,7 +99,7 @@ jobs:
     needs: [test, lint]
     strategy:
       matrix:
-        goos: [linux, windows, darwin]
+        goos: [linux, darwin, windows]
         goarch: [amd64, arm64]
         exclude:
           - goos: windows
@@ -127,6 +127,10 @@ jobs:
       run: go mod download
 
     - name: Build binary
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+        CGO_ENABLED: 0
       run: |
         mkdir -p bin
         go build -ldflags="-w -s" -o bin/server-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || '' }} cmd/server/main.go
@@ -159,14 +163,12 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: go-starter
+        images: build-with-go/go-starter
         tags: |
           type=ref,event=branch
           type=ref,event=pr
           type=sha,prefix={{branch}}-
-        flavor: |
-          latest=auto
-          suffix=-{{date 'YYYYMMDD-HHmmss'}}
+          type=raw,value=latest,enable={{is_default_branch}}
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
