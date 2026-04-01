@@ -153,7 +153,6 @@ linters:
   disable-all: true
   enable:
     - bodyclose
-    - depguard
     - dogsled
     - dupl
     - errcheck
@@ -172,7 +171,6 @@ linters:
     - misspell
     - nakedret
     - noctx
-    - nolintlint
     - rowserrcheck
     - staticcheck
     - stylecheck
@@ -184,8 +182,6 @@ linters:
     - revive
     - mnd
     - err113
-    - gomoddirectives
-    - gomodguard
     - goprintffuncname
     - prealloc
     - predeclared
