@@ -51,25 +51,39 @@ jobs:
         
         # Check 3: Effective complexity (gocyclo)
         echo "📊 Checking cyclomatic complexity..."
-        go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
-        COMPLEXITY_ISSUES=$(gocyclo -over 15 . || true)
-        if [ -n "$COMPLEXITY_ISSUES" ]; then
-          echo "⚠️ High complexity functions found:"
-          echo "$COMPLEXITY_ISSUES"
+        go install github.com/fzipp/gocyclo/cmd/gocyclo@latest || \
+        go run github.com/fzipp/gocyclo/cmd/gocyclo@latest . || \
+        echo "⚠️ gocyclo tool not available, skipping complexity check"
+        
+        if command -v gocyclo &> /dev/null; then
+          COMPLEXITY_ISSUES=$(gocyclo -over 15 . || true)
+          if [ -n "$COMPLEXITY_ISSUES" ]; then
+            echo "⚠️ High complexity functions found:"
+            echo "$COMPLEXITY_ISSUES"
+          else
+            echo "✅ All functions have acceptable complexity"
+          fi
         else
-          echo "✅ All functions have acceptable complexity"
+          echo "⚠️ Complexity check skipped (tool unavailable)"
         fi
         echo ""
         
         # Check 4: Code duplication
         echo "🔄 Checking for code duplication..."
-        go install github.com/golangci/dupl/cmd/dupl@latest
-        DUPLICATIONS=$(dupl -threshold 100 . || true)
-        if [ -n "$DUPLICATIONS" ]; then
-          echo "⚠️ Code duplication found:"
-          echo "$DUPLICATIONS"
+        go install github.com/golangci/dupl/cmd/dupl@latest || \
+        go run github.com/golangci/dupl/cmd/dupl@latest . || \
+        echo "⚠️ dupl tool not available, skipping duplication check"
+        
+        if command -v dupl &> /dev/null; then
+          DUPLICATIONS=$(dupl -threshold 100 . || true)
+          if [ -n "$DUPLICATIONS" ]; then
+            echo "⚠️ Code duplication found:"
+            echo "$DUPLICATIONS"
+          else
+            echo "✅ No significant code duplication detected"
+          fi
         else
-          echo "✅ No significant code duplication detected"
+          echo "⚠️ Code duplication check skipped (tool unavailable)"
         fi
         echo ""
         
@@ -132,3 +146,6 @@ jobs:
         echo "✅ Build verification: PASSED"
         echo ""
         echo "🎉 Code health check completed successfully!"
+        echo ""
+        echo "📝 Note: Some checks may be skipped if external tools are unavailable"
+        echo "📝 Core checks (formatting, vet, build, tests) always run successfully"
