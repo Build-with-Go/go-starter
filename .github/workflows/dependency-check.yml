@@ -26,23 +26,17 @@ jobs:
         go-version: '1.21'
 
     - name: Install jq
-      run: |
-        # Install jq for JSON parsing (gh CLI is already available in GitHub Actions)
-        sudo apt-get update && sudo apt-get install -y jq
+      run: sudo apt-get update && sudo apt-get install -y jq
 
     - name: Check for outdated Go modules
       id: outdated
       run: |
         echo "🔍 Checking for outdated Go modules..."
         
-        # Get list of direct dependencies
-        go list -m -json all | jq -r 'select(.Indirect != true) | "\(.Path)@\(.Version)"' > current_deps.txt || echo "No direct dependencies found"
+        go list -m -json all | jq -r 'select(.Indirect != true and .Update.Version != null) | "\(.Path)@\(.Update.Version)"' > updates.txt || echo "No updates available"
         
-        # Check for updates
-        go list -u -m -json all | jq -r 'select(.Indirect != true and .Update.Version != null) | "\(.Path)@\(.Update.Version)"' > updates.txt || echo "No updates available"
-        
-        echo "📋 Current dependencies:"
-        cat current_deps.txt || echo "No dependencies found"
+        echo "📋 Updates found:"
+        cat updates.txt || echo "No updates found"
         echo ""
         
         if [ -s updates.txt ]; then
@@ -57,18 +51,22 @@ jobs:
     - name: Create update PR
       if: steps.outdated.outputs.outdated == 'true'
       run: |
+        echo "🔄 Creating pull request..."
+        
         # Create branch for updates
         BRANCH="dependency-updates-$(date +%Y%m%d-%H%M%S)"
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git checkout -b $BRANCH
+        echo "🌿 Creating branch: $BRANCH"
+        git checkout -b $BRANCH || {
+          echo "❌ Failed to create branch"
+          exit 1
+        }
         
         # Update dependencies
         echo "📦 Updating dependencies..."
         go get -u ./...
         go mod tidy
         
-        # Run tests to ensure updates don't break anything
+        # Run tests
         echo "🧪 Running tests..."
         go test ./... || {
           echo "❌ Tests failed after dependency updates"
@@ -76,6 +74,7 @@ jobs:
         }
         
         # Commit changes
+        echo "📝 Committing changes..."
         git add go.mod go.sum
         git commit -m "chore: update dependencies
         
@@ -83,37 +82,42 @@ jobs:
         - All tests pass after updates"
         
         # Push branch
-        git push origin $BRANCH
+        echo "📤 Pushing branch..."
+        git push origin $BRANCH || {
+          echo "❌ Failed to push branch"
+          exit 1
+        }
         
-        # Create PR
+        # Create PR with simple body
         echo "🔄 Creating pull request..."
+        PR_TITLE="📦 Automated Dependency Updates"
+        
         gh pr create \
-          --title "📦 Automated Dependency Updates" \
-          --body "## 🚀 Automated Dependency Updates
-
-        This PR updates the following dependencies:
-
-        \`\`\`
-        $(cat updates.txt)
-        \`\`\`
-
-        ### ✅ Checks
-        - [x] All tests pass
-        - [x] Dependencies updated successfully
-        - [x] No breaking changes detected
-
-        ### 📋 Review Notes
-        - Please review the dependency changes
-        - Check for any breaking changes in the changelogs
-        - Test thoroughly before merging
-
-        ---
-        🤖 This PR was created automatically by GitHub Actions
-        " \
+          --title "$PR_TITLE" \
+          --body "Automated dependency updates found. Please review the changes in go.mod and go.sum files." \
           --base master \
-          --head $BRANCH || echo "⚠️ PR creation failed - branch might already exist"
+          --head $BRANCH || {
+          echo "❌ PR creation failed, creating issue instead..."
+          
+          # Alternative: Create issue instead of PR
+          ISSUE_TITLE="📦 Automated Dependency Updates Available"
+          
+          gh issue create \
+            --title "$ISSUE_TITLE" \
+            --body "Automated dependency updates are available. Please review and create a PR manually." || {
+              echo "❌ Issue creation also failed"
+              exit 1
+            }
+        }
         
         echo "✅ Dependency update process completed!"
+        echo "🔗 Created PR or Issue: https://github.com/Build-with-Go/go-starter/pulls"
+        
+        echo "📊 Summary:"
+        echo "- Branch: $BRANCH"
+        echo "- Updated packages: $(wc -l < updates.txt)"
+        echo "- All tests passed"
+        echo "- Ready for review"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -131,6 +135,6 @@ jobs:
           cat updates.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
         else
-          echo "✅ **Status**: All dependencies up to date" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status**: All dependencies are up to date" >> $GITHUB_STEP_SUMMARY
           echo "🎉 **Action**: No updates needed" >> $GITHUB_STEP_SUMMARY
         fi
