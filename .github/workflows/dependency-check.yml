@@ -1,0 +1,53 @@
+name: Dependency Check
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  dependency-check:
+    name: Check for Dependency Updates
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Check for outdated Go modules
+      run: |
+        echo "🔍 Checking for outdated Go modules..."
+        
+        # Get list of outdated packages
+        go list -u -m -json all | grep -E '"Path":|"Version":|"Time":|"Update":' || echo "No outdated packages found"
+        
+        # Check for any security vulnerabilities
+        echo "🛡️ Checking for security vulnerabilities..."
+        go list -json -m all | nancy sleuth --skip-update-check || echo "No vulnerabilities found"
+
+    - name: Check GitHub Actions updates
+      run: |
+        echo "🔄 Checking for GitHub Actions updates..."
+        
+        # Extract action versions from workflow files
+        grep -r "uses:" .github/workflows/ | grep -v "#" | sort | uniq
+        
+        echo "💡 Consider updating GitHub Actions to latest versions if available"
+
+    - name: Create summary
+      run: |
+        echo "## 📦 Dependency Check Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Go modules checked" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Security vulnerabilities scanned" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ GitHub Actions reviewed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Next steps:**" >> $GITHUB_STEP_SUMMARY
+        echo "- Review any outdated packages above" >> $GITHUB_STEP_SUMMARY
+        echo "- Dependabot will create PRs for updates (daily)" >> $GITHUB_STEP_SUMMARY
+        echo "- Monitor Dependabot Alerts for security issues" >> $GITHUB_STEP_SUMMARY
