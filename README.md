@@ -1,7 +1,6 @@
 # Go Starter
 
 [![Doctor Report](https://img.shields.io/badge/Doctor%20Report-🩺-green)](https://github.com/Build-with-Go/go-starter/actions)
-[![CI](https://img.shields.io/github/actions/workflow/status/Build-with-Go/go-starter/ci.yml?branch=master&label=CI)](https://github.com/Build-with-Go/go-starter/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
 [![Template](https://img.shields.io/badge/Template-Use%20Me-brightgreen.svg)](https://github.com/Build-with-Go/go-starter/generate)
