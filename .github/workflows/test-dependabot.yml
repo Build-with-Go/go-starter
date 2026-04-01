@@ -28,7 +28,7 @@ jobs:
         retention-days: 1
         
     - name: Cache Go modules
-      uses: actions/cache@v3  # Intentionally using older version for Dependabot test
+      uses: actions/cache@v5  # Intentionally using older version for Dependabot test
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
