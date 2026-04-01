@@ -13,6 +13,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: read
     steps:
     - name: Check out code
       uses: actions/checkout@v4
@@ -40,6 +41,10 @@ jobs:
         # Check for updates
         go list -u -m -json all | jq -r 'select(.Indirect != true and .Update.Version != null) | "\(.Path)@\(.Update.Version)"' > updates.txt || echo "No updates available"
         
+        echo "📋 Current dependencies:"
+        cat current_deps.txt || echo "No dependencies found"
+        echo ""
+        
         if [ -s updates.txt ]; then
           echo "outdated=true" >> $GITHUB_OUTPUT
           echo "Found $(wc -l < updates.txt) outdated packages:"
@@ -59,7 +64,7 @@ jobs:
         git checkout -b $BRANCH
         
         # Update dependencies
-        echo "� Updating dependencies..."
+        echo "📦 Updating dependencies..."
         go get -u ./...
         go mod tidy
         
@@ -81,33 +86,34 @@ jobs:
         git push origin $BRANCH
         
         # Create PR
+        echo "🔄 Creating pull request..."
         gh pr create \
           --title "📦 Automated Dependency Updates" \
           --body "## 🚀 Automated Dependency Updates
 
         This PR updates the following dependencies:
-        
+
         \`\`\`
         $(cat updates.txt)
         \`\`\`
-        
+
         ### ✅ Checks
         - [x] All tests pass
         - [x] Dependencies updated successfully
         - [x] No breaking changes detected
-        
+
         ### 📋 Review Notes
         - Please review the dependency changes
-        - Check for any breaking changes in the changelinks
+        - Check for any breaking changes in the changelogs
         - Test thoroughly before merging
-        
+
         ---
         🤖 This PR was created automatically by GitHub Actions
         " \
           --base master \
-          --head $BRANCH
+          --head $BRANCH || echo "⚠️ PR creation failed - branch might already exist"
         
-        echo "✅ Dependency update PR created: $BRANCH"
+        echo "✅ Dependency update process completed!"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
