@@ -1,8 +1,10 @@
+// Package errors provides custom error types for the Go Starter application.
 package errors
 
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 // AppError represents an application error with HTTP status code
@@ -41,7 +43,7 @@ func NewAppError(code int, message, details string, err error) *AppError {
 	}
 }
 
-// Common error constructors
+// NewBadRequestError creates a new bad request error
 func NewBadRequestError(message string, err error) *AppError {
 	return NewAppError(http.StatusBadRequest, message, "", err)
 }
@@ -70,7 +72,7 @@ func NewServiceUnavailableError(message string, err error) *AppError {
 	return NewAppError(http.StatusServiceUnavailable, message, "", err)
 }
 
-// Validation errors
+// ValidationError represents a field validation error
 type ValidationError struct {
 	Field   string `json:"field"`
 	Message string `json:"message"`
@@ -83,11 +85,11 @@ func NewValidationError(field, message string) *ValidationError {
 	}
 }
 
-func (e *ValidationError) Error() string {
-	return fmt.Sprintf("validation error on field '%s': %s", e.Field, e.Message)
+func (ve *ValidationError) Error() string {
+	return fmt.Sprintf("validation error on field '%s': %s", ve.Field, ve.Message)
 }
 
-// Error collection for multiple validation errors
+// ValidationErrors represents a collection of validation errors
 type ValidationErrors struct {
 	Errors []ValidationError `json:"errors"`
 }
@@ -99,10 +101,7 @@ func NewValidationErrors() *ValidationErrors {
 }
 
 func (ve *ValidationErrors) Add(field, message string) {
-	ve.Errors = append(ve.Errors, ValidationError{
-		Field:   field,
-		Message: message,
-	})
+	ve.Errors = append(ve.Errors, *NewValidationError(field, message))
 }
 
 func (ve *ValidationErrors) HasErrors() bool {
@@ -110,10 +109,15 @@ func (ve *ValidationErrors) HasErrors() bool {
 }
 
 func (ve *ValidationErrors) Error() string {
-	if len(ve.Errors) == 0 {
-		return "no validation errors"
+	if !ve.HasErrors() {
+		return ""
 	}
-	return fmt.Sprintf("validation errors: %d issues found", len(ve.Errors))
+
+	var messages []string
+	for _, err := range ve.Errors {
+		messages = append(messages, err.Error())
+	}
+	return strings.Join(messages, "; ")
 }
 
 func (ve *ValidationErrors) ToAppError() *AppError {

@@ -1,3 +1,4 @@
+// Package server provides HTTP server functionality for the Go Starter application.
 package server
 
 import (

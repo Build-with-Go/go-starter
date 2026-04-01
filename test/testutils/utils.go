@@ -1,3 +1,4 @@
+// Package testutils provides testing utilities for the Go Starter application.
 package testutils
 
 import (
@@ -21,7 +22,11 @@ func NewHTTPTestHelper(t *testing.T) *HTTPTestHelper {
 }
 
 // MakeRequest creates an HTTP request for testing
-func (h *HTTPTestHelper) MakeRequest(handler http.Handler, method, path string, body interface{}) *httptest.ResponseRecorder {
+func (h *HTTPTestHelper) MakeRequest(
+	handler http.Handler,
+	method, path string,
+	body interface{},
+) *httptest.ResponseRecorder {
 	var reqBody *bytes.Buffer
 	if body != nil {
 		jsonBody, err := json.Marshal(body)
@@ -133,7 +138,7 @@ func (td *TestDatabase) Cleanup() {
 	// Add cleanup logic here when implementing actual database tests
 }
 
-// Common test data structures
+// TestUser represents a test user for testing purposes
 type TestUser struct {
 	ID    string `json:"id"`
 	Email string `json:"email"`
@@ -146,7 +151,7 @@ type TestResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
-// Helper functions for creating test data
+// CreateTestUser creates a test user for testing purposes
 func CreateTestUser(id, email, name string) TestUser {
 	return TestUser{
 		ID:    id,

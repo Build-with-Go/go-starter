@@ -1,3 +1,4 @@
+// Package logger provides structured logging functionality for the Go Starter application.
 package logger
 
 import (
@@ -21,14 +22,14 @@ type Logger struct {
 
 // New creates a new logger instance based on configuration
 func New(cfg *LoggerConfig) (*Logger, error) {
-	var output io.Writer = os.Stdout
+	var output io.Writer
 
 	// Configure output format
 	switch strings.ToLower(cfg.Format) {
 	case "json":
 		output = os.Stdout
 	case "console":
-		output = zerolog.ConsoleWriter{Out: os.Stdout}
+		output = os.Stdout
 	default:
 		output = os.Stdout
 	}

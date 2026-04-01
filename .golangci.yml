@@ -4,13 +4,13 @@ run:
   tests: true
 
 output:
-  format: colored-line-number
+  formats: colored-line-number
   print-issued-lines: true
   print-linter-name: true
 
 linters-settings:
   govet:
-    check-shadowing: true
+    shadow: true
     enable-all: true
   gocyclo:
     min-complexity: 15
@@ -45,7 +45,7 @@ linters-settings:
     min-complexity: 20
   nestif:
     min-complexity: 4
-  gomnd:
+  mnd:
     settings:
       mnd:
         checks:
@@ -143,7 +143,6 @@ linters:
   disable-all: true
   enable:
     - bodyclose
-    - deadcode
     - depguard
     - dogsled
     - dupl
@@ -155,30 +154,35 @@ linters:
     - gocyclo
     - gofmt
     - goimports
-    - golint
-    - gomnd
-    - goprintffuncname
     - gosec
     - gosimple
     - govet
     - ineffassign
-    - interfacer
     - lll
     - misspell
     - nakedret
     - noctx
     - nolintlint
     - rowserrcheck
-    - scopelint
     - staticcheck
-    - structcheck
     - stylecheck
     - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
     - whitespace
+    - revive
+    - mnd
+    - gomnd
+    - fieldalignment
+    - goerr113
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
+    - nolintlint
+    - prealloc
+    - predeclared
+    - testifylint
 
 issues:
   exclude-rules:
@@ -201,15 +205,15 @@ issues:
       linters:
         - govet
 
-    # Exclude certain golint issues
+    # Exclude certain revive issues
     - text: "should have a package comment"
       linters:
-        - golint
+        - revive
 
     # Exclude magic number warnings in tests
     - path: _test\.go
       linters:
-        - gomnd
+        - mnd
 
   exclude-use-default: false
   max-issues-per-linter: 0

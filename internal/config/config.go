@@ -1,3 +1,4 @@
+// Package config provides configuration management for the Go Starter application.
 package config
 
 import (
