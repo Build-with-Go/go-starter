@@ -4,33 +4,79 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/Build-with-Go/go-starter/ci.yml?branch=master&label=CI)](https://github.com/Build-with-Go/go-starter/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
+[![Template](https://img.shields.io/badge/Template-Use%20Me-brightgreen.svg)](https://github.com/Build-with-Go/go-starter/generate)
 
 A production-ready, batteries-included Go project template for the Build-with-Go organization.
 
-## 🚀 Quick Start
+## 🎯 Use This Template
 
+### **Option 1: GitHub Template (Recommended)**
+1. Click the **"Use this template"** button above
+2. Choose your new repository name
+3. Clone your new repository locally
+4. Follow the setup instructions below
+
+### **Option 2: Manual Clone**
 ```bash
 # Clone the repository
-git clone https://github.com/Build-with-Go/go-starter.git
-cd go-starter
+git clone https://github.com/Build-with-Go/go-starter.git YOUR_PROJECT_NAME
+cd YOUR_PROJECT_NAME
 
+# Remove the git history and reinitialize
+rm -rf .git
+git init
+git add .
+git commit -m "Initial commit from Go Starter template"
+
+# Add your remote origin
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_PROJECT_NAME.git
+git push -u origin master
+```
+
+## 🚀 Setup After Using Template
+
+After creating your repository from this template:
+
+### **1. Update Project Information**
+```bash
+# Update go.mod with your project details
+# Change: module github.com/Build-with-Go/go-starter
+# To: module github.com/YOUR_USERNAME/YOUR_PROJECT_NAME
+
+# Update package names in Go files
+find . -name "*.go" -type f -exec sed -i 's/github.com\/Build-with-Go\/go-starter/github.com\/YOUR_USERNAME\/YOUR_PROJECT_NAME/g' {} +
+
+# Update README.md with your project information
+```
+
+### **2. Configuration**
+```bash
 # Copy configuration
 cp configs/config.example.yaml configs/config.yaml
 
+# Edit configs/config.yaml with your settings
+```
+
+### **3. Development Setup**
+```bash
 # Install dependencies
 make deps
 
 # Run the application
 make run
-```
 
-Or run directly:
-
-```bash
+# Or run directly
 go run cmd/server/main.go
 ```
 
-## 📋 Features
+### **4. Customize for Your Project**
+- � **Update README.md** with your project description
+- 🔧 **Modify configs/config.yaml** for your needs
+- 🎯 **Add your business logic** in `internal/` directories
+- 🧪 **Write tests** for your new features
+- 🐳 **Update Dockerfile** if you need different dependencies
+
+## � Features
 
 - ✅ **Go 1.21+** with idiomatic patterns
 - ✅ **Configuration** with Viper (file + env + validation)
@@ -42,6 +88,9 @@ go run cmd/server/main.go
 - ✅ **Linting** with golangci-lint
 - ✅ **Docker** multi-stage builds
 - ✅ **CI/CD** with GitHub Actions
+- ✅ **Dependency Management** with Dependabot
+- ✅ **Code Quality** with Doctor Bot
+- ✅ **Automated Testing** with GitHub Actions
 
 ## 🏗️ Project Structure
 
@@ -206,3 +255,38 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 📚 Architecture
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design decisions and patterns.
+
+## 🎯 Template Usage
+
+### **For Template Users**
+This repository is a **GitHub Template**. To use it:
+
+1. Click the **"Use this template"** button at the top
+2. Enter your new repository name
+3. Clone your new repository locally
+4. Run the setup script:
+   ```bash
+   chmod +x scripts/setup-template.sh
+   ./scripts/setup-template.sh
+   ```
+
+### **For Template Maintainers**
+To update this template:
+
+1. Make changes to the template code
+2. Test the changes thoroughly
+3. Update this README if needed
+4. Commit and push changes
+5. Existing projects using this template won't be affected
+
+### **Template Features**
+- ✅ **One-click setup** via GitHub template
+- ✅ **Automated customization** with setup script
+- ✅ **Comprehensive tooling** (CI/CD, testing, linting)
+- ✅ **Production-ready** configuration
+- ✅ **Best practices** built-in
+- ✅ **Documentation** and examples
+
+---
+
+🎉 **Happy coding!** If you find this template useful, give it a ⭐ on GitHub!

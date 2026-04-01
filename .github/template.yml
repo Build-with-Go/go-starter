@@ -1,0 +1,42 @@
+# Template metadata for GitHub
+template:
+  name: Go Starter
+  description: Production-ready, batteries-included Go project template
+  about: A comprehensive Go starter template with CI/CD, testing, Docker, and best practices
+  
+# Template categories
+categories:
+  - go
+  - web
+  - api
+  - template
+  - starter
+  - production-ready
+  
+# Template features
+features:
+  - Go 1.21+ with idiomatic patterns
+  - Configuration management with Viper
+  - Structured logging with zerolog
+  - HTTP router with chi/v5
+  - Health checks and monitoring
+  - Graceful shutdown handling
+  - Comprehensive testing setup
+  - Docker multi-stage builds
+  - GitHub Actions CI/CD
+  - Dependabot for dependency updates
+  - Doctor Bot for code quality
+  - Linting with golangci-lint
+  
+# Quick setup commands
+quick_setup:
+  - cp configs/config.example.yaml configs/config.yaml
+  - make deps
+  - make run
+  
+# Post-setup instructions
+post_setup:
+  - Update go.mod with your project name
+  - Customize configs/config.yaml
+  - Add your business logic in internal/
+  - Update README.md with project details
