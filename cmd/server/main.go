@@ -28,7 +28,7 @@ func main() {
 	}
 
 	// Initialize logger
-	loggerConfig := &logger.LoggerConfig{
+	loggerConfig := &logger.Config{
 		Level:  cfg.Logger.Level,
 		Format: cfg.Logger.Format,
 	}

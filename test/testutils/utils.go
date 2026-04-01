@@ -151,19 +151,20 @@ type TestResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
+// CreateTestResponse creates a test response for testing purposes
+func CreateTestResponse(status, message string, data interface{}) TestResponse {
+	return TestResponse{
+		Status:  status,
+		Message: message,
+		Data:    data,
+	}
+}
+
 // CreateTestUser creates a test user for testing purposes
 func CreateTestUser(id, email, name string) TestUser {
 	return TestUser{
 		ID:    id,
 		Email: email,
 		Name:  name,
-	}
-}
-
-func CreateTestResponse(status, message string, data interface{}) TestResponse {
-	return TestResponse{
-		Status:  status,
-		Message: message,
-		Data:    data,
 	}
 }

@@ -12,13 +12,13 @@ import (
 func TestNew(t *testing.T) {
 	tests := []struct {
 		name        string
-		config      *LoggerConfig
+		config      *Config
 		wantErr     bool
 		description string
 	}{
 		{
 			name: "JSON format logger",
-			config: &LoggerConfig{
+			config: &Config{
 				Level:  "info",
 				Format: "json",
 			},
@@ -26,17 +26,8 @@ func TestNew(t *testing.T) {
 			description: "Should create JSON logger",
 		},
 		{
-			name: "Console format logger",
-			config: &LoggerConfig{
-				Level:  "debug",
-				Format: "console",
-			},
-			wantErr:     false,
-			description: "Should create console logger",
-		},
-		{
 			name: "Invalid level fallback",
-			config: &LoggerConfig{
+			config: &Config{
 				Level:  "invalid",
 				Format: "json",
 			},
@@ -45,7 +36,7 @@ func TestNew(t *testing.T) {
 		},
 		{
 			name: "Invalid format fallback",
-			config: &LoggerConfig{
+			config: &Config{
 				Level:  "info",
 				Format: "invalid",
 			},
@@ -69,8 +60,54 @@ func TestNew(t *testing.T) {
 	}
 }
 
+func TestNewConfig(t *testing.T) {
+	tests := []struct {
+		name        string
+		config      *Config
+		expectError bool
+	}{
+		{
+			name: "valid json config",
+			config: &Config{
+				Level:  "info",
+				Format: "json",
+			},
+			expectError: false,
+		},
+		{
+			name: "valid console config",
+			config: &Config{
+				Level:  "debug",
+				Format: "console",
+			},
+			expectError: false,
+		},
+		{
+			name: "invalid format",
+			config: &Config{
+				Level:  "info",
+				Format: "invalid",
+			},
+			expectError: false, // Should fallback to stdout
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			logger, err := New(tt.config)
+			if tt.expectError {
+				assert.Error(t, err)
+				assert.Nil(t, logger)
+			} else {
+				assert.NoError(t, err)
+				assert.NotNil(t, logger)
+			}
+		})
+	}
+}
+
 func TestLoggerWithContext(t *testing.T) {
-	config := &LoggerConfig{
+	config := &Config{
 		Level:  "info",
 		Format: "json",
 	}
@@ -105,7 +142,7 @@ func TestLoggerWithContext(t *testing.T) {
 func TestLoggerMethods(t *testing.T) {
 	// Create a logger that writes to a buffer for testing
 	var buf bytes.Buffer
-	config := &LoggerConfig{
+	config := &Config{
 		Level:  "info",
 		Format: "json",
 	}
@@ -202,7 +239,7 @@ func TestLoggerFormat(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var buf bytes.Buffer
-			config := &LoggerConfig{
+			config := &Config{
 				Level:  "info",
 				Format: tt.format,
 			}

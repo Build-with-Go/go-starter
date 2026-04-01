@@ -9,8 +9,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// LoggerConfig holds logging configuration
-type LoggerConfig struct {
+// Config holds logging configuration
+type Config struct {
 	Level  string `mapstructure:"level" validate:"required,oneof=trace debug info warn error"`
 	Format string `mapstructure:"format" validate:"required,oneof=json console"`
 }
@@ -21,7 +21,7 @@ type Logger struct {
 }
 
 // New creates a new logger instance based on configuration
-func New(cfg *LoggerConfig) (*Logger, error) {
+func New(cfg *Config) (*Logger, error) {
 	var output io.Writer
 
 	// Configure output format
