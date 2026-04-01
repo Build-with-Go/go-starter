@@ -1,0 +1,12 @@
+# Test file to trigger Dependabot
+# This file intentionally uses an old version to test Dependabot PR creation
+
+version: "3.8"
+
+services:
+  test:
+    image: "redis:6.2.6"  # Intentionally using old Redis version
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=test123

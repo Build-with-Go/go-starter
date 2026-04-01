@@ -1,0 +1,24 @@
+# Test workflow to trigger Dependabot GitHub Actions updates
+name: Test Dependabot
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3  # Intentionally using older version for Dependabot test
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3  # Intentionally using older version for Dependabot test
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Run test
+      run: echo "Testing Dependabot trigger"

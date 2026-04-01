@@ -4,8 +4,8 @@ go 1.22
 
 require (
 	github.com/go-chi/chi/v5 v5.2.5
-	github.com/rs/zerolog v1.31.0
-	github.com/spf13/viper v1.16.0
+	github.com/rs/zerolog v1.28.0 // Intentionally using older version for Dependabot test
+	github.com/spf13/viper v1.15.0 // Intentionally using older version for Dependabot test
 	github.com/stretchr/testify v1.8.4
 )
 
