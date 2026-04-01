@@ -4,9 +4,10 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "monday"
       time: "09:00"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 3
     reviewers:
       - "build-with-go/maintainers"
     assignees:
@@ -14,14 +15,26 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    # Group updates to reduce PR count
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "version-update:semver-patch"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "monday"
       time: "09:00"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     reviewers:
       - "build-with-go/maintainers"
     assignees:
@@ -29,14 +42,22 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    # Group minor updates together
+    groups:
+      github-actions:
+        patterns:
+          - "github.com/actions/*"
+        update-types:
+          - "version-update:semver-patch"
 
   # Docker
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "monday"
       time: "09:00"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 1
     reviewers:
       - "build-with-go/maintainers"
     assignees:
