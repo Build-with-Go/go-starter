@@ -1,0 +1,98 @@
+name: Go Report Card
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run weekly on Mondays at 10:00 UTC
+    - cron: '0 10 * * 1'
+
+jobs:
+  goreportcard:
+    name: Go Report Card
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Run Go Report Card
+      uses: creekorful/goreportcard-action@v1.0
+      with:
+        args: '-r github.com/Build-with-Go/go-starter'
+
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Read the goreportcard results
+          const reportPath = path.join(process.env.GITHUB_WORKSPACE, 'goreportcard.txt');
+          let reportContent = '';
+          
+          try {
+            reportContent = fs.readFileSync(reportPath, 'utf8');
+          } catch (error) {
+            console.log('No goreportcard results found');
+            return;
+          }
+          
+          // Extract grade from report
+          const gradeMatch = reportContent.match(/Grade: ([A-F])/);
+          const grade = gradeMatch ? gradeMatch[1] : 'N/A';
+          
+          // Create comment
+          const comment = `
+          ## 📊 Go Report Card Results
+          
+          **Grade: ${grade}**
+          
+          <details>
+          <summary>📋 Full Report</summary>
+          
+          \`\`\`
+          ${reportContent}
+          \`\`\`
+          </details>
+          
+          [View detailed report on goreportcard.com](https://goreportcard.com/report/github.com/Build-with-Go/go-starter)
+          `;
+          
+          // Post comment
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+    - name: Update README badge
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        # Extract grade from goreportcard results
+        GRADE=$(grep "Grade:" goreportcard.txt | awk '{print $2}' || echo "A")
+        
+        # Update README.md with new grade
+        sed -i "s|https://goreportcard.com/badge/github.com/Build-with-Go/go-starter|https://goreportcard.com/badge/github.com/Build-with-Go/go-starter?grade=${GRADE}|g" README.md
+        
+        # Commit changes if different
+        if git diff --quiet README.md; then
+          echo "No changes to README"
+        else
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "chore: update Go Report Card grade to ${GRADE}"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

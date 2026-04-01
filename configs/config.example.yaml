@@ -1,0 +1,21 @@
+# Example configuration file for go-starter
+# Copy this to config.yaml and modify as needed
+
+server:
+  host: "localhost"
+  port: 8080
+  read_timeout: 30  # seconds
+  write_timeout: 30 # seconds
+  idle_timeout: 120 # seconds
+
+database:
+  host: "localhost"
+  port: 5432
+  name: "go_starter"
+  user: "postgres"
+  password: "password"
+  ssl_mode: "disable"
+
+logger:
+  level: "info"  # trace, debug, info, warn, error
+  format: "json" # json, console

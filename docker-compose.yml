@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_SERVER_HOST=0.0.0.0
+      - APP_SERVER_PORT=8080
+      - APP_DATABASE_HOST=postgres
+      - APP_DATABASE_PORT=5432
+      - APP_DATABASE_NAME=go_starter
+      - APP_DATABASE_USER=postgres
+      - APP_DATABASE_PASSWORD=password
+      - APP_DATABASE_SSL_MODE=disable
+      - APP_LOGGER_LEVEL=info
+      - APP_LOGGER_FORMAT=json
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - go-starter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=go_starter
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - go-starter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - go-starter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Development service with hot reload
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_SERVER_HOST=0.0.0.0
+      - APP_SERVER_PORT=8080
+      - APP_DATABASE_HOST=postgres
+      - APP_DATABASE_PORT=5432
+      - APP_DATABASE_NAME=go_starter_dev
+      - APP_DATABASE_USER=postgres
+      - APP_DATABASE_PASSWORD=password
+      - APP_DATABASE_SSL_MODE=disable
+      - APP_LOGGER_LEVEL=debug
+      - APP_LOGGER_FORMAT=console
+    volumes:
+      - .:/app
+      - /app/vendor
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - go-starter-network
+    profiles:
+      - dev
+    command: ["air", "-c", ".air.toml"]
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  go-starter-network:
+    driver: bridge
