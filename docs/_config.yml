@@ -1,0 +1,34 @@
+# Site settings
+title: Go Starter
+description: Production-ready Go Project Template
+url: "https://build-with-go.github.io"
+baseurl: "/go-starter"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Social metadata
+og_image: "https://github.com/Build-with-Go/go-starter/raw/main/assets/social-preview.svg"
+twitter_card: summary_large_image
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+# Include
+include:
+  - _pages

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Starter - Production-ready Go Project Template</title>
+    
+    <!-- Social Media Meta Tags -->
+    <meta property="og:title" content="Go Starter - Production-ready Go Project Template">
+    <meta property="og:description" content="A production-ready, batteries-included Go project template with CI/CD, Docker, and best practices.">
+    <meta property="og:image" content="https://github.com/Build-with-Go/go-starter/raw/main/assets/social-preview.png">
+    <meta property="og:url" content="https://github.com/Build-with-Go/go-starter">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Go Starter">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Go Starter - Production-ready Go Project Template">
+    <meta name="twitter:description" content="A production-ready, batteries-included Go project template with CI/CD, Docker, and best practices.">
+    <meta name="twitter:image" content="https://github.com/Build-with-Go/go-starter/raw/main/assets/social-preview.png">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="description" content="A production-ready, batteries-included Go project template with CI/CD, Docker, and best practices.">
+    <meta name="keywords" content="go, golang, template, starter, production, ci/cd, docker, best-practices">
+    <meta name="author" content="Build-with-Go">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00ADD8">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🚀</text></svg>">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #00ADD8 0%, #0066cc 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+        }
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        .description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        .cta {
+            margin-top: 2rem;
+        }
+        .btn {
+            display: inline-block;
+            background: white;
+            color: #00ADD8;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🚀</div>
+        <h1>Go Starter</h1>
+        <p class="description">
+            Production-ready, batteries-included Go project template with CI/CD, Docker, and best practices.
+        </p>
+        
+        <div class="features">
+            <div class="feature">
+                <div>⚡ Go 1.21+</div>
+                <small>Modern Go with idiomatic patterns</small>
+            </div>
+            <div class="feature">
+                <div>🔧 Configuration</div>
+                <small>Viper with validation</small>
+            </div>
+            <div class="feature">
+                <div>📝 Logging</div>
+                <small>Structured zerolog</small>
+            </div>
+            <div class="feature">
+                <div>🌐 HTTP Router</div>
+                <small>chi/v5 middleware</small>
+            </div>
+            <div class="feature">
+                <div>🏥 Health Checks</div>
+                <small>Ready/Probes</small>
+            </div>
+            <div class="feature">
+                <div>🐳 Docker</div>
+                <small>Multi-stage builds</small>
+            </div>
+        </div>
+        
+        <div class="cta">
+            <a href="https://github.com/Build-with-Go/go-starter" class="btn">
+                View on GitHub
+            </a>
+        </div>
+    </div>
+</body>
+</html>

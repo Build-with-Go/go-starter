@@ -1,0 +1,95 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#gradient)"/>
+  
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ADD8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066cc;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Shadow Filter -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.2"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Content Container -->
+  <g transform="translate(100, 150)">
+    
+    <!-- Main Title -->
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="white">
+      Go Starter
+    </text>
+    
+    <!-- Subtitle -->
+    <text x="0" y="130" font-family="Arial, sans-serif" font-size="28" fill="white" opacity="0.9">
+      Production-ready Go Project Template
+    </text>
+    
+    <!-- Description -->
+    <text x="0" y="180" font-family="Arial, sans-serif" font-size="20" fill="white" opacity="0.8">
+      Batteries-included with CI/CD, Docker, and best practices
+    </text>
+    
+    <!-- Features Grid -->
+    <g transform="translate(0, 220)">
+      <!-- Row 1 -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="200" height="60" rx="8" fill="white" opacity="0.1" filter="url(#shadow)"/>
+        <text x="100" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="white" text-anchor="middle">⚡ Go 1.21+</text>
+        <text x="100" y="45" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.8" text-anchor="middle">Modern Go patterns</text>
+      </g>
+      
+      <g transform="translate(220, 0)">
+        <rect x="0" y="0" width="200" height="60" rx="8" fill="white" opacity="0.1" filter="url(#shadow)"/>
+        <text x="100" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="white" text-anchor="middle">🔧 Viper Config</text>
+        <text x="100" y="45" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.8" text-anchor="middle">File + env + validation</text>
+      </g>
+      
+      <g transform="translate(440, 0)">
+        <rect x="0" y="0" width="200" height="60" rx="8" fill="white" opacity="0.1" filter="url(#shadow)"/>
+        <text x="100" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="white" text-anchor="middle">📝 Zerolog</text>
+        <text x="100" y="45" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.8" text-anchor="middle">Structured logging</text>
+      </g>
+      
+      <!-- Row 2 -->
+      <g transform="translate(0, 80)">
+        <rect x="0" y="0" width="200" height="60" rx="8" fill="white" opacity="0.1" filter="url(#shadow)"/>
+        <text x="100" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="white" text-anchor="middle">🌐 chi/v5</text>
+        <text x="100" y="45" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.8" text-anchor="middle">HTTP router</text>
+      </g>
+      
+      <g transform="translate(220, 80)">
+        <rect x="0" y="0" width="200" height="60" rx="8" fill="white" opacity="0.1" filter="url(#shadow)"/>
+        <text x="100" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="white" text-anchor="middle">🏥 Health Checks</text>
+        <text x="100" y="45" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.8" text-anchor="middle">Ready/Probes</text>
+      </g>
+      
+      <g transform="translate(440, 80)">
+        <rect x="0" y="0" width="200" height="60" rx="8" fill="white" opacity="0.1" filter="url(#shadow)"/>
+        <text x="100" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="white" text-anchor="middle">🐳 Docker</text>
+        <text x="100" y="45" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.8" text-anchor="middle">Multi-stage builds</text>
+      </g>
+    </g>
+    
+    <!-- GitHub URL -->
+    <text x="0" y="400" font-family="monospace" font-size="16" fill="white" opacity="0.7">
+      github.com/Build-with-Go/go-starter
+    </text>
+  </g>
+  
+  <!-- Go Gopher Logo (simplified) -->
+  <g transform="translate(950, 100)">
+    <circle cx="50" cy="50" r="45" fill="white" opacity="0.2"/>
+    <text x="50" y="65" font-size="48" text-anchor="middle" fill="white">🐹</text>
+  </g>
+</svg>
