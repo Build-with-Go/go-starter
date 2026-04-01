@@ -20,12 +20,12 @@ updates:
       production-dependencies:
         dependency-type: "production"
         update-types:
-          - "version-update:semver-patch"
-          - "version-update:semver-minor"
+          - "patch"
+          - "minor"
       development-dependencies:
         dependency-type: "development"
         update-types:
-          - "version-update:semver-patch"
+          - "patch"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -48,7 +48,7 @@ updates:
         patterns:
           - "github.com/actions/*"
         update-types:
-          - "version-update:semver-patch"
+          - "patch"
 
   # Docker
   - package-ecosystem: "docker"
