@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/build-with-go/go-starter/internal/config"
-	"github.com/build-with-go/go-starter/internal/logger"
-	"github.com/build-with-go/go-starter/internal/server"
+	"github.com/Build-with-Go/go-starter/internal/config"
+	"github.com/Build-with-Go/go-starter/internal/logger"
+	"github.com/Build-with-Go/go-starter/internal/server"
 )
 
 const (

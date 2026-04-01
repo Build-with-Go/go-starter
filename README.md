@@ -1,6 +1,6 @@
 # Go Starter
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/build-with-go/go-starter)](https://goreportcard.com/report/github.com/build-with-go/go-starter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Build-with-Go/go-starter)](https://goreportcard.com/report/github.com/Build-with-Go/go-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
 
@@ -86,7 +86,7 @@ The Go Report Card provides automated analysis of Go code quality:
 
 ```bash
 # Run Go Report Card locally
-goreportcard -r github.com/build-with-go/go-starter
+goreportcard -r github.com/Build-with-Go/go-starter
 ```
 
 The report checks for:

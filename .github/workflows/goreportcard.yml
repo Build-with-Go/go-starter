@@ -19,3 +19,5 @@ jobs:
 
     - name: Run Go Report Card
       uses: creekorful/goreportcard-action@v1.0
+      with:
+        args: -r github.com/Build-with-Go/go-starter
