@@ -1,4 +1,4 @@
-.PHONY: help build run test lint clean deps fmt vet check goreportcard
+.PHONY: help build run test lint clean deps fmt vet check doctorreport
 
 # Default target
 help: ## Show this help message
@@ -28,13 +28,17 @@ lint: ## Run golangci-lint
 
 check: fmt vet lint ## Run all checks (fmt, vet, lint)
 
-goreportcard: ## Run Go Report Card analysis
-	@if command -v goreportcard >/dev/null 2>&1; then \
-		goreportcard -r github.com/Build-with-Go/go-starter; \
-	else \
-		echo "goreportcard not installed. Install with: go install github.com/gojp/goreportcard/cmd/goreportcard@latest"; \
-		exit 1; \
-	fi
+doctorreport: ## Run Doctor Report analysis
+	@echo "🩺 Running Doctor Report analysis..."
+	@echo "📝 Checking code formatting..."
+	@go fmt ./...
+	@echo "🔍 Running go vet analysis..."
+	@go vet ./...
+	@echo "🧪 Running tests..."
+	@go test ./...
+	@echo "🔨 Verifying build..."
+	@go build ./...
+	@echo "✅ Doctor Report completed!"
 
 test: ## Run tests
 	go test -v -race -coverprofile=coverage.out ./...
@@ -70,7 +74,6 @@ clean: ## Clean build artifacts
 dev-setup: ## Set up development environment
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	go install github.com/air-verse/air@latest
-	go install github.com/gojp/goreportcard/cmd/goreportcard@latest
 	go mod download
 
 dev: ## Run with hot reload (requires air)
@@ -89,7 +92,7 @@ docker-run: ## Run Docker container
 	docker run -p 8080:8080 --env-file configs/.env go-starter:latest
 
 # CI/CD targets
-ci: deps check goreportcard test ## Run CI pipeline locally
+ci: deps check doctorreport test ## Run CI pipeline locally
 
 release: ## Build release binaries
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-w -s" -o bin/server-linux-amd64 cmd/server/main.go

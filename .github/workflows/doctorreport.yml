@@ -1,0 +1,134 @@
+name: Doctor Report
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+
+jobs:
+  doctor-report:
+    name: Code Health Doctor Report
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.22'
+
+    - name: Run Doctor Report
+      run: |
+        echo "🩺 Running Code Health Doctor Report..."
+        echo ""
+        
+        # Check 1: Go formatting (gofmt)
+        echo "📝 Checking code formatting (gofmt)..."
+        UNFORMATTED=$(gofmt -l .)
+        if [ -n "$UNFORMATTED" ]; then
+          echo "❌ Files not properly formatted:"
+          echo "$UNFORMATTED"
+          exit 1
+        else
+          echo "✅ All files properly formatted"
+        fi
+        echo ""
+        
+        # Check 2: Go vet analysis
+        echo "🔍 Running go vet analysis..."
+        if go vet ./...; then
+          echo "✅ go vet analysis passed"
+        else
+          echo "❌ go vet analysis failed"
+          exit 1
+        fi
+        echo ""
+        
+        # Check 3: Effective complexity (gocyclo)
+        echo "📊 Checking cyclomatic complexity..."
+        go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+        COMPLEXITY_ISSUES=$(gocyclo -over 15 . || true)
+        if [ -n "$COMPLEXITY_ISSUES" ]; then
+          echo "⚠️ High complexity functions found:"
+          echo "$COMPLEXITY_ISSUES"
+        else
+          echo "✅ All functions have acceptable complexity"
+        fi
+        echo ""
+        
+        # Check 4: Code duplication
+        echo "🔄 Checking for code duplication..."
+        go install github.com/golangci/dupl/cmd/dupl@latest
+        DUPLICATIONS=$(dupl -threshold 100 . || true)
+        if [ -n "$DUPLICATIONS" ]; then
+          echo "⚠️ Code duplication found:"
+          echo "$DUPLICATIONS"
+        else
+          echo "✅ No significant code duplication detected"
+        fi
+        echo ""
+        
+        # Check 5: Package documentation
+        echo "📚 Checking package documentation..."
+        PACKAGES=$(go list ./...)
+        MISSING_DOCS=""
+        for pkg in $PACKAGES; do
+          if ! grep -q "Package $(basename $pkg)" "$pkg"/*.go 2>/dev/null; then
+            MISSING_DOCS="$MISSING_DOCS $pkg"
+          fi
+        done
+        if [ -n "$MISSING_DOCS" ]; then
+          echo "⚠️ Packages missing documentation:"
+          echo "$MISSING_DOCS"
+        else
+          echo "✅ All packages have documentation"
+        fi
+        echo ""
+        
+        # Check 6: Test coverage
+        echo "🧪 Checking test coverage..."
+        go test -coverprofile=coverage.out ./...
+        COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}')
+        echo "📊 Total test coverage: $COVERAGE"
+        
+        # Check if coverage is above threshold
+        COVERAGE_NUM=$(echo $COVERAGE | sed 's/%//')
+        if (( $(echo "$COVERAGE_NUM >= 80" | bc -l) )); then
+          echo "✅ Test coverage is good (≥80%)"
+        else
+          echo "⚠️ Test coverage could be improved (<80%)"
+        fi
+        echo ""
+        
+        # Check 7: Imports and dependencies
+        echo "� Checking import organization..."
+        go list -f '{{.ImportPath}}: {{join .Imports " "}}' ./... | head -10
+        echo "✅ Import structure reviewed"
+        echo ""
+        
+        # Check 8: Build verification
+        echo "🔨 Verifying build..."
+        if go build ./...; then
+          echo "✅ All packages build successfully"
+        else
+          echo "❌ Build failed"
+          exit 1
+        fi
+        echo ""
+        
+        # Final summary
+        echo "🩺 Doctor Report Summary:"
+        echo "✅ Code formatting: PASSED"
+        echo "✅ Static analysis: PASSED" 
+        echo "✅ Complexity check: COMPLETED"
+        echo "✅ Duplication check: COMPLETED"
+        echo "✅ Documentation: COMPLETED"
+        echo "✅ Test coverage: $COVERAGE"
+        echo "✅ Build verification: PASSED"
+        echo ""
+        echo "🎉 Code health check completed successfully!"

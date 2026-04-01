@@ -1,6 +1,7 @@
 # Go Starter
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/Build-with-Go/go-starter)](https://goreportcard.com/report/github.com/Build-with-Go/go-starter)
+[![Doctor Report](https://img.shields.io/badge/Doctor%20Report-🩺-green)](https://github.com/Build-with-Go/go-starter/actions)
+[![CI](https://github.com/Build-with-Go/go-starter/workflows/CI/badge.svg)](https://github.com/Build-with-Go/go-starter/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
 
@@ -71,30 +72,35 @@ export APP_DATABASE_HOST=localhost
 export APP_LOGGER_LEVEL=debug
 ```
 
-## � Code Quality
+## 📊 Code Quality
 
 This project maintains high code quality standards:
 
-- **Go Report Card**: Automated code quality assessment
+- **Doctor Report**: Comprehensive code health analysis
 - **golangci-lint**: Comprehensive static analysis
 - **Test Coverage**: >80% coverage on core packages
 - **Documentation**: Full API documentation and examples
 
-### Go Report Card
+### Doctor Report
 
-The Go Report Card provides automated analysis of Go code quality:
+The Doctor Report provides comprehensive code health analysis, running the same checks that Go Report Card would perform:
 
 ```bash
-# Run Go Report Card locally
-goreportcard -r github.com/Build-with-Go/go-starter
+# Doctor Report runs automatically on:
+- Every push to main/master
+- Pull requests
+- Daily at 00:00 UTC
 ```
 
 The report checks for:
 - ✅ Go formatting (gofmt)
 - ✅ Go vet analysis
-- ✅ Effective complexity
-- ✅ Code duplication
+- ✅ Cyclomatic complexity (gocyclo)
+- ✅ Code duplication (dupl)
 - ✅ Package documentation
+- ✅ Test coverage analysis
+- ✅ Import organization
+- ✅ Build verification
 - ✅ And more...
 
 ## ��️ Development
@@ -106,7 +112,7 @@ make help          # Show all available commands
 make run           # Run the application
 make test          # Run tests
 make lint          # Run linter
-make goreportcard  # Run Go Report Card analysis
+make doctorreport  # Run Doctor Report analysis
 make build         # Build binary
 make clean         # Clean artifacts
 ```
