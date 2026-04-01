@@ -21,10 +21,17 @@ jobs:
         cache: 'true'
         
     - name: Upload artifact
-      uses: actions/upload-artifact@v3  # Intentionally using older version for Dependabot test
+      uses: actions/upload-artifact@v4  # Updated to non-deprecated version
       with:
         name: test-artifact
         path: README.md
+        retention-days: 1
+        
+    - name: Download artifact
+      uses: actions/download-artifact@v3  # Intentionally using older version for Dependabot test
+      with:
+        name: test-artifact
+        path: ./downloaded
         
     - name: Run Go test
       run: |
