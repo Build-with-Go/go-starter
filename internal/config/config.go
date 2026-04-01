@@ -96,7 +96,7 @@ func setDefaults() {
 	viper.SetDefault("database.port", 5432)
 	viper.SetDefault("database.name", "go_starter")
 	viper.SetDefault("database.user", "postgres")
-	viper.SetDefault("database.password", "password")
+	viper.SetDefault("database.password", "") // Empty default - must be set via environment
 	viper.SetDefault("database.ssl_mode", "disable")
 
 	// Logger defaults

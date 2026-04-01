@@ -125,7 +125,9 @@ func (s *Server) Shutdown(ctx context.Context) error {
 func (s *Server) handleHealthz(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"status":"ok","service":"go-starter"}`))
+	if _, err := w.Write([]byte(`{"status":"ok","service":"go-starter"}`)); err != nil {
+		s.logger.WithError(err).Logger.Error().Msg("Failed to write healthz response")
+	}
 }
 
 // handleReady handles readiness probe
@@ -133,26 +135,34 @@ func (s *Server) handleReady(w http.ResponseWriter, r *http.Request) {
 	// TODO: Add actual readiness checks (database connectivity, etc.)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"status":"ready","service":"go-starter"}`))
+	if _, err := w.Write([]byte(`{"status":"ready","service":"go-starter"}`)); err != nil {
+		s.logger.WithError(err).Logger.Error().Msg("Failed to write ready response")
+	}
 }
 
 // handleAPIRoot handles API root endpoint
 func (s *Server) handleAPIRoot(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"message":"go-starter API v1.0.0","endpoints":["/healthz","/ready"]}`))
+	if _, err := w.Write([]byte(`{"message":"go-starter API v1.0.0","endpoints":["/healthz","/ready"]}`)); err != nil {
+		s.logger.WithError(err).Logger.Error().Msg("Failed to write API root response")
+	}
 }
 
 // handleNotFound handles 404 errors
 func (s *Server) handleNotFound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNotFound)
-	w.Write([]byte(`{"error":"not found","path":"` + r.URL.Path + `"}`))
+	if _, err := w.Write([]byte(`{"error":"not found","path":"` + r.URL.Path + `"}`)); err != nil {
+		s.logger.WithError(err).Logger.Error().Msg("Failed to write not found response")
+	}
 }
 
 // handleMethodNotAllowed handles 405 errors
 func (s *Server) handleMethodNotAllowed(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusMethodNotAllowed)
-	w.Write([]byte(`{"error":"method not allowed","method":"` + r.Method + `"}`))
+	if _, err := w.Write([]byte(`{"error":"method not allowed","method":"` + r.Method + `"}`)); err != nil {
+		s.logger.WithError(err).Logger.Error().Msg("Failed to write method not allowed response")
+	}
 }

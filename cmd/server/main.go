@@ -15,11 +15,6 @@ import (
 	"github.com/Build-with-Go/go-starter/internal/server"
 )
 
-const (
-	appName    = "go-starter"
-	appVersion = "1.0.0"
-)
-
 func main() {
 	// Parse command line flags
 	var configPath string
