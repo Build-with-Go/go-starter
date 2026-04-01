@@ -19,8 +19,3 @@ jobs:
 
     - name: Run Go Report Card
       uses: creekorful/goreportcard-action@v1.0
-      with:
-        args: -timeout 5m
-      env:
-        # Optional: Set a GitHub token if you want to comment on PRs
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
