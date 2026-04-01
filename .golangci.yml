@@ -4,7 +4,7 @@ run:
   tests: true
 
 output:
-  formats: colored-line-number
+  format: colored-line-number
   print-issued-lines: true
   print-linter-name: true
 
@@ -174,12 +174,10 @@ linters:
     - revive
     - mnd
     - gomnd
-    - fieldalignment
     - goerr113
     - gomoddirectives
     - gomodguard
     - goprintffuncname
-    - nolintlint
     - prealloc
     - predeclared
     - testifylint
