@@ -18,12 +18,6 @@ linters-settings:
         deny:
           - pkg: "github.com/Build-with-Go/go-starter/internal"
             desc: "Do not import internal packages from main"
-          - pkg: "github.com/stretchr/testify"
-            desc: "Do not import testify from main"
-          - pkg: "github.com/spf13/viper"
-            desc: "Do not import viper from main"
-          - pkg: "github.com/rs/zerolog"
-            desc: "Do not import zerolog from main"
         allow:
           - "github.com/Build-with-Go/go-starter/internal/config"
           - "github.com/Build-with-Go/go-starter/internal/logger"
@@ -33,6 +27,7 @@ linters-settings:
           - "github.com/stretchr/testify"
           - "github.com/spf13/viper"
           - "github.com/rs/zerolog"
+          - "$std"
   gocyclo:
     min-complexity: 15
   maligned:
@@ -103,9 +98,6 @@ linters-settings:
         severity: warning
         disabled: false
       - name: blank-imports
-        severity: warning
-        disabled: false
-      - name: exported-type
         severity: warning
         disabled: false
       - name: unexported-return
