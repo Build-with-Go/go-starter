@@ -12,6 +12,27 @@ linters-settings:
   govet:
     shadow: true
     enable-all: true
+  depguard:
+    rules:
+      main:
+        deny:
+          - pkg: "github.com/Build-with-Go/go-starter/internal"
+            desc: "Do not import internal packages from main"
+          - pkg: "github.com/stretchr/testify"
+            desc: "Do not import testify from main"
+          - pkg: "github.com/spf13/viper"
+            desc: "Do not import viper from main"
+          - pkg: "github.com/rs/zerolog"
+            desc: "Do not import zerolog from main"
+        allow:
+          - "github.com/Build-with-Go/go-starter/internal/config"
+          - "github.com/Build-with-Go/go-starter/internal/logger"
+          - "github.com/Build-with-Go/go-starter/internal/server"
+          - "github.com/go-chi/chi/v5"
+          - "github.com/go-chi/chi/v5/middleware"
+          - "github.com/stretchr/testify"
+          - "github.com/spf13/viper"
+          - "github.com/rs/zerolog"
   gocyclo:
     min-complexity: 15
   maligned:
@@ -114,9 +135,6 @@ linters-settings:
       - name: var-declaration
         severity: warning
         disabled: false
-      - name: package-main
-        severity: warning
-        disabled: false
       - name: range-val-in-closure
         severity: warning
         disabled: false
@@ -173,8 +191,7 @@ linters:
     - whitespace
     - revive
     - mnd
-    - gomnd
-    - goerr113
+    - err113
     - gomoddirectives
     - gomodguard
     - goprintffuncname
