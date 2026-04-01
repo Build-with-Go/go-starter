@@ -1,4 +1,4 @@
-module github.com/Build-with-Go/go-starter
+module github.com/build-with-go/go-starter
 
 go 1.22
 

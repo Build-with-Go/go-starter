@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Build-with-Go/go-starter/internal/config"
-	"github.com/Build-with-Go/go-starter/internal/logger"
+	"github.com/build-with-go/go-starter/internal/config"
+	"github.com/build-with-go/go-starter/internal/logger"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
