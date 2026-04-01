@@ -10,14 +10,24 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  golangci:
+  goreportcard:
     name: Go Report Card
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Run Go Report Card
-      uses: creekorful/goreportcard-action@v1.0
+    - name: Set up Go
+      uses: actions/setup-go@v4
       with:
-        args: -r github.com/Build-with-Go/go-starter
+        go-version: '1.21'
+
+    - name: Run Go Report Card
+      run: |
+        # Install goreportcard
+        go install github.com/gojp/goreportcard/cmd/goreportcard@latest
+        
+        # Run goreportcard on the current directory
+        goreportcard .
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
